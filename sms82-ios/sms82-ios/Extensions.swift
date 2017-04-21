@@ -45,12 +45,9 @@ extension UIViewController {
                                              action:  #selector(SWRevealViewController.revealToggle(_:)))
             
             self.navigationItem.leftBarButtonItem = leftButton
-            // self.navigationController!.navigationItem.leftBarButtonItem = leftButton
             self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
         }
-        
-        
+        self.navigationController?.navigationBar.barTintColor = UIColor.white
     }
-    
 }
 
