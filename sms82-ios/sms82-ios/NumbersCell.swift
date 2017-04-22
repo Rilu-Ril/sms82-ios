@@ -11,6 +11,7 @@ import Foundation
 class NumbersCell: UITableViewCell {
     
     @IBOutlet weak var textField: UITextField!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
     }

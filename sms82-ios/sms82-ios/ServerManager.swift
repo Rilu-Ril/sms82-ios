@@ -20,34 +20,47 @@ class ServerManager: HTTPRequestManager {
     }
     
     func getMessages(_ completion: @escaping (Messages)-> Void, error: @escaping (String)-> Void) {
-        self.get(api: "api/message/list", completion: { (json) in
+        let device_id = UserDefaults.standard.string(forKey: "devid")!
+        self.get(api: "api/message/list?user_device_id=\(device_id)", completion: { (json) in
             let obj = Messages(json: json)
             completion(obj)},
                  error: error)
     }
     
-    func getMessageDelails(by id:Int, completion: @escaping (MessagesStatus)-> Void, error: @escaping (String)-> Void) {
-        self.get(api: "api/message/\(id)", completion: { (json) in
-            let obj = MessagesStatus(json: json)
-            completion(obj)},
-                 error: error)
-    }
-
-    func getResponses(_ completion: @escaping (Responses)-> Void, error: @escaping (String)-> Void) {
-        self.get(api: "api/message/send", completion: { (json) in
-            let obj = Responses(json: json)
+    func getMessageDelails(by id:Int, completion: @escaping (MessageStatus)-> Void, error: @escaping (String)-> Void) {
+        let device_id = UserDefaults.standard.string(forKey: "devid")!
+        self.get(api: "api/message/\(id)?user_device_id=\(device_id)", completion: { (json) in
+            let obj = MessageStatus(json: json)
             completion(obj)},
                  error: error)
     }
     
-    func sendMessage(message: Info, _ completion: @escaping ()-> Void, error: @escaping (String)-> Void) {
+    func getBalance( completion: @escaping (Balance)-> Void, error: @escaping (String)-> Void) {
+        let device_id = UserDefaults.standard.string(forKey: "devid")!
+        self.get(api: "api/message/send?user_device_id=\(device_id)", completion: { (json) in
+            let obj = Balance(json: json)
+            completion(obj)},
+                 error: error)
+    }
+    
+    func login(with login: LoginModel, _ completion: @escaping (LoginResponse)-> Void, error: @escaping (String)-> Void) {
+        
+        let param = login.toDic()
+        post(api: "api/message/login",
+             parameters: param, completion: {(json) in
+                let obj = LoginResponse(json: json)
+                completion(obj)
+        }, error: error)
+    }
+    
+    func sendMessage(message: Info, _ completion: @escaping (Response)-> Void, error: @escaping (String)-> Void) {
         let param = message.toDict()
         
         post(api: "api/message/send",
              parameters: param, completion: {(json) in
-                completion()
+                let obj = Response(json: json)
+                
+                completion(obj)
         }, error: error)
     }
-    
-    
 }

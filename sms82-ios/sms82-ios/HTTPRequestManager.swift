@@ -16,18 +16,24 @@ class HTTPRequestManager {
     
     private func request(method: HTTPMethod, api: String, parameters: [String: Any]?, completion: @escaping (JSON)-> Void, error: @escaping (String)-> Void) {
         
+       // let device_id =
+        
         let APIaddress = "\(url)\(api)"
         
-       // let header: HTTPHeaders = ["Authentification": "Basic dGVzdDoxMjNxd2UxMjM="]
         var header: HTTPHeaders = [:]
-        
-        if let authorizationHeader = Request.authorizationHeader(user: "test", password: "123qwe123") {
-            header[authorizationHeader.key] = authorizationHeader.value
+        if let user = UserDefaults.standard.string(forKey: "username") {
+            if let password  = UserDefaults.standard.string(forKey: "password") {
+                if let authorizationHeader = Request.authorizationHeader(user: user, password: password) {
+                    
+                    header[authorizationHeader.key] = authorizationHeader.value
+                }
+            }
         }
         
-        Alamofire.request(APIaddress, method: method, parameters: parameters, encoding: JSONEncoding.default , headers: header)
+        
+        Alamofire.request(APIaddress, method: method, parameters: parameters, encoding: URLEncoding.default, headers: header)
             .responseJSON { (response:DataResponse<Any>) in
-            
+                
             if !(response.response != nil) {
                 if response.result.isFailure {
                     if (response.error != nil) {
@@ -49,7 +55,6 @@ class HTTPRequestManager {
                 error("Вам нужно войти, чтобы выполнить это действие")
                 return
             }
-            
             
             let statusInt =  statusCode / 100
             
@@ -83,6 +88,7 @@ class HTTPRequestManager {
             }
         }
     }
+    
     
     
     internal func post(api: String, parameters: [String: Any], completion: @escaping (JSON)-> Void, error: @escaping (String)-> Void) {

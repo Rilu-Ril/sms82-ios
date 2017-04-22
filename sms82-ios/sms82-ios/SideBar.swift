@@ -11,13 +11,22 @@ import UIKit
 class SideBarVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
+    
+    @IBOutlet weak var lblUsername: UILabel!
+    @IBOutlet weak var lblMessageLeft: UILabel!
+    @IBOutlet weak var lblMessageSent: UILabel!
+    
     var names = ["Send Message", "Send message via file", "Message status", "Profile"]
     let navIdentifiers = ["sendMessage", "sendViaFile", "messageStatus" , "profile"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.tableFooterView = UIView()
-        
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        self.lblUsername.text = DataManager.sharedInstance.getUsername()
+        self.lblMessageLeft.text = DataManager.sharedInstance.getMessagesLeft()
+        self.lblMessageSent.text = DataManager.sharedInstance.getMessagesSent()
     }
     
     
