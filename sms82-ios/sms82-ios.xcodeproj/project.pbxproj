@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2376C45D1EA9BB77000F0560 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2376C45C1EA9BB77000F0560 /* AppDelegate.swift */; };
-		2376C45F1EA9BB77000F0560 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2376C45E1EA9BB77000F0560 /* ViewController.swift */; };
 		2376C4621EA9BB77000F0560 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2376C4601EA9BB77000F0560 /* Main.storyboard */; };
 		2376C4641EA9BB77000F0560 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2376C4631EA9BB77000F0560 /* Assets.xcassets */; };
 		2376C4671EA9BB77000F0560 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2376C4651EA9BB77000F0560 /* LaunchScreen.storyboard */; };
@@ -42,7 +41,6 @@
 /* Begin PBXFileReference section */
 		2376C4591EA9BB77000F0560 /* sms82-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "sms82-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2376C45C1EA9BB77000F0560 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2376C45E1EA9BB77000F0560 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		2376C4611EA9BB77000F0560 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2376C4631EA9BB77000F0560 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2376C4661EA9BB77000F0560 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -120,7 +118,6 @@
 				2376C4A41EAA4FB9000F0560 /* ServerManager.swift */,
 				2376C4A61EAA5174000F0560 /* HTTPRequestManager.swift */,
 				330EE6201EABD2670083DC1E /* DateManager.swift */,
-				2376C45E1EA9BB77000F0560 /* ViewController.swift */,
 				2376C4601EA9BB77000F0560 /* Main.storyboard */,
 				2376C4631EA9BB77000F0560 /* Assets.xcassets */,
 				2376C4651EA9BB77000F0560 /* LaunchScreen.storyboard */,
@@ -327,7 +324,6 @@
 				2376C4991EAA3F52000F0560 /* DetailedMessagesStatusVC.swift in Sources */,
 				2376C4801EA9D3B2000F0560 /* Extensions.swift in Sources */,
 				2376C4931EAA3616000F0560 /* MessageInfoCell.swift in Sources */,
-				2376C45F1EA9BB77000F0560 /* ViewController.swift in Sources */,
 				2376C47D1EA9D0FD000F0560 /* SWRevealViewController.m in Sources */,
 				2376C48F1EA9F7F2000F0560 /* NumbersCell.swift in Sources */,
 				2376C4A71EAA5174000F0560 /* HTTPRequestManager.swift in Sources */,
