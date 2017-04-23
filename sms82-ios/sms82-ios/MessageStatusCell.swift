@@ -18,4 +18,23 @@ class MessageStatusCell: UITableViewCell {
         super.awakeFromNib()
     }
     
+    func setStatus(phone: Phone) {
+        let status = phone.status
+        lblStatus.text = status
+        if status == "success" {
+            lblStatus.textColor = UIColor.green
+            activityIndicator.isHidden = true
+        } else if status == "error" {
+            lblStatus.textColor = UIColor.red
+            activityIndicator.isHidden = true
+        } else {
+            activityIndicator.isHidden = false
+            activityIndicator.startAnimating()
+            lblStatus.isHidden = true
+        }
+        
+        lblStatus.text = status
+        lblNumber.text = phone.number
+    }
+    
 }

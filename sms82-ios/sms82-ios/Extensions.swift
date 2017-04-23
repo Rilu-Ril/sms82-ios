@@ -21,7 +21,7 @@ extension UIViewController {
         let okAction = UIAlertAction(title: "OK", style: .default, handler: {(action) in
             ok()
         })
-        let cancel = UIAlertAction(title: "Отмена", style: .cancel) { (action) in
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
             cancel()
         }
         
@@ -31,7 +31,7 @@ extension UIViewController {
     }
     
     func showErrorAlert(message: String) {
-        let alertController = UIAlertController(title: "Ошибка", message: message, preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Oops", message: message, preferredStyle: .alert)
         let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
         alertController.addAction(OKAction)
         self.present(alertController, animated: true, completion: nil)

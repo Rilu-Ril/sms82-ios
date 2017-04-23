@@ -20,11 +20,11 @@ class BaseModel: NSObject {
         super.init()
         
         if self.messageSent != "" {
-            DataManager.sharedInstance.setMessagesSent(self.messageSent)
+            DataManager.shared.setMessagesSent(self.messageSent)
         }
         
         if self.messageLeft != "" {
-            DataManager.sharedInstance.setMessagesLeft(self.messageLeft)
+            DataManager.shared.setMessagesLeft(self.messageLeft)
         }
     }
    

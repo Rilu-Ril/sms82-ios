@@ -20,7 +20,7 @@ class ServerManager: HTTPRequestManager {
     }
     
     func getMessages(_ completion: @escaping (Messages)-> Void, error: @escaping (String)-> Void) {
-        let device_id = UserDefaults.standard.string(forKey: "devid")!
+        let device_id = DataManager.shared.getDeviceID()
         self.get(api: "api/message/list?user_device_id=\(device_id)", completion: { (json) in
             let obj = Messages(json: json)
             completion(obj)},
@@ -28,7 +28,7 @@ class ServerManager: HTTPRequestManager {
     }
     
     func getMessageDelails(by id:Int, completion: @escaping (MessageStatus)-> Void, error: @escaping (String)-> Void) {
-        let device_id = UserDefaults.standard.string(forKey: "devid")!
+        let device_id = DataManager.shared.getDeviceID()
         self.get(api: "api/message/\(id)?user_device_id=\(device_id)", completion: { (json) in
             let obj = MessageStatus(json: json)
             completion(obj)},
@@ -36,7 +36,7 @@ class ServerManager: HTTPRequestManager {
     }
     
     func getBalance( completion: @escaping (Balance)-> Void, error: @escaping (String)-> Void) {
-        let device_id = UserDefaults.standard.string(forKey: "devid")!
+        let device_id = DataManager.shared.getDeviceID()
         self.get(api: "api/message/send?user_device_id=\(device_id)", completion: { (json) in
             let obj = Balance(json: json)
             completion(obj)},
@@ -55,7 +55,6 @@ class ServerManager: HTTPRequestManager {
     
     func sendMessage(message: Info, _ completion: @escaping (Response)-> Void, error: @escaping (String)-> Void) {
         let param = message.toDict()
-        
         post(api: "api/message/send",
              parameters: param, completion: {(json) in
                 let obj = Response(json: json)

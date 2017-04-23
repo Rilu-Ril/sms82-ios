@@ -42,7 +42,7 @@ struct Info {
                     phoneValue += ",\"\(phone)\""
                 }
             }
-            
+          
         }
         phoneValue += "]"
         

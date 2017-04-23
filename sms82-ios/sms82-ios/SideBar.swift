@@ -22,25 +22,34 @@ class SideBarVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.tableFooterView = UIView()
+      
     }
+    
     override func viewDidAppear(_ animated: Bool) {
-        self.lblUsername.text = DataManager.sharedInstance.getUsername()
-        self.lblMessageLeft.text = DataManager.sharedInstance.getMessagesLeft()
-        self.lblMessageSent.text = DataManager.sharedInstance.getMessagesSent()
+        self.lblUsername.text = DataManager.shared.getUsername()
+        self.lblMessageLeft.text = DataManager.shared.getMessagesLeft()
+        self.lblMessageSent.text = DataManager.shared.getMessagesSent()
     }
     
-    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+        
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return names.count
     }
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.textLabel?.text = names[indexPath.row]
-        cell.selectionStyle = .none
+        
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "sidebarCell", for: indexPath) as! SidebarCell
+
+        cell.setData(title: names[indexPath.row],
+                     image: navIdentifiers[indexPath.row])
+
         cell.backgroundColor = UIColor(red: 54/255, green: 71/255, blue: 79/255, alpha: 1)
-        cell.textLabel?.textColor = UIColor(red: 111/255, green: 133/255, blue: 147/255, alpha: 1)
+
         return cell
     }
     
@@ -48,6 +57,7 @@ class SideBarVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
         let revealVC = self.revealViewController()
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: navIdentifiers[indexPath.row])
+       
         revealVC?.pushFrontViewController(vc, animated: true)
     }
 }

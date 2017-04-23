@@ -11,43 +11,11 @@ import IQKeyboardManager
 import MapKit
 
 
-class SendMessageVC: UIViewController, UIScrollViewDelegate, UITextFieldDelegate, CLLocationManagerDelegate, UITextViewDelegate {
+class SendMessageVC: UIViewController, UIScrollViewDelegate, UITextFieldDelegate, UITextViewDelegate {
     
     enum SEC_TYPE {
         case textField
         case buttons
-    }
-    
-    @IBAction func addNumber(_ sender: Any) {
-        if numbers.count >= userBalance {
-            return
-        }
-        numbers.append("")
-        tableView.reloadData()
-        updateViewConstraints()
-        let y =  scrolView.contentOffset.y
-        let x = scrolView.contentOffset.x
-        
-        let height = textMessage.frame.size.height + 36 + tableViewHeight.constant
-        if height > UIScreen.main.bounds.height - 2{
-            scrolView.setContentOffset(CGPoint(x: x, y: y + CGFloat(rowHeight)), animated: true)
-        }
-    }
-    
-    @IBAction func sendMessage(_ sender: Any) {
-        let msg = self.textMessage.text!
-  
-        let messageSendModel = Info(message: msg, phones: numbers, geolocation: [lat,lon])
-        
-        ServerManager.sharedInstance.sendMessage(message: messageSendModel, { (resp) in
-            print(resp)
-            self.present()
-            print("response: \(resp.notification)")
-            
-           // UserDefaults.standard.set(resp.balance, forKey: "messagesLeft")
-            
-        
-        }, error: showErrorAlert)
     }
     
     @IBOutlet var scrolView: UIScrollView!
@@ -58,19 +26,29 @@ class SendMessageVC: UIViewController, UIScrollViewDelegate, UITextFieldDelegate
     let locationManager = CLLocationManager()
     
     var numbers: [String] = ["","","",""]
+    
     var rowHeight = 55
-    var lat = ""
-    var lon = ""
+    var lat = "0"
+    var lon = "0"
     var maxLenght = 100
     var userBalance = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigationBar()
         
-        self.title = NSLocalizedString("Send Message", comment: "Send Message")
+        self.title = "Send message"
+        
         tableView.tableFooterView = UIView()
         textMessage.delegate = self
         
+        setLocationManager()
+        loadBalance()
+        
+   
+    }
+    
+    func setLocationManager() {
         self.locationManager.requestAlwaysAuthorization()
         
         // For use in foreground
@@ -81,14 +59,57 @@ class SendMessageVC: UIViewController, UIScrollViewDelegate, UITextFieldDelegate
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             locationManager.startUpdatingLocation()
         }
-        
+    }
+    
+    func loadBalance() {
         ServerManager.sharedInstance.getBalance(completion: { (balance) in
             self.maxLenght = balance.allowed_length
             self.userBalance = balance.user_balance
-            print("ballance: \(self.userBalance) - lenght: \(self.maxLenght)")
         }, error: showErrorAlert)
+    }
+    
+    @IBAction func addNumber(_ sender: Any) {
         
-   
+        var numberCount = 0
+        for n in numbers {
+            if n != "" {
+                numberCount += 1
+            }
+        }
+        
+        if numberCount >= userBalance {
+            showErrorAlert(message: "Exeed balance")
+            return
+        }
+        
+        numbers.append("")
+        tableView.reloadData()
+        updateScrollView()
+    }
+    
+    func updateScrollView() {
+        updateViewConstraints()
+        let y =  scrolView.contentOffset.y
+        let x = scrolView.contentOffset.x
+        
+        let height = textMessage.frame.size.height + 36 + tableViewHeight.constant
+        if height > UIScreen.main.bounds.height - 2 {
+            scrolView.setContentOffset(CGPoint(x: x,
+                                               y: y + CGFloat(rowHeight)),
+                                       animated: true)
+        }
+    }
+    
+    @IBAction func sendMessage(_ sender: Any) {
+        let msg = self.textMessage.text!
+        let messageSendModel = Info(message: msg,
+                                    phones: numbers,
+                                    geolocation: [lat,lon])
+        
+        ServerManager.sharedInstance.sendMessage(message:
+            messageSendModel, { (resp) in
+            self.presentStatusVC()
+        }, error: showErrorAlert)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -109,33 +130,24 @@ class SendMessageVC: UIViewController, UIScrollViewDelegate, UITextFieldDelegate
         self.numbers[textField.tag - 1] = textField.text!
         
     }
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let newText = (textView.text as NSString).replacingCharacters(in: range, with: text)
-        let numberOfChars = newText.characters.count // for Swift use count(newText)
-        return numberOfChars < maxLenght
+    func textView(_ textView: UITextView, shouldChangeTextIn
+        range: NSRange, replacementText text: String) -> Bool {
+        let newText = (textView.text as NSString)
+            .replacingCharacters(in: range, with: text)
         
+        let numberOfChars = newText.characters.count
+        return numberOfChars < maxLenght
     }
     
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if lat != "" {
-            return
-        }
-        if let location = manager.location {
-            let locValue:CLLocationCoordinate2D = location.coordinate
-            print("locations = \(locValue.latitude) \(locValue.longitude)")
-            self.lat = "\(locValue.latitude)"
-            self.lon = "\(locValue.longitude)"
-        }
-    }
-    
-    func present() {
+    func presentStatusVC() {
         let revealVC =  self.revealViewController()
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-
-        let vc  = storyboard.instantiateViewController(withIdentifier: "messageStatus")
+        let vc  = storyboard.instantiateViewController(
+            withIdentifier: "messageStatus")
         revealVC?.pushFrontViewController(vc, animated: false)
     }
+
 }
 
 extension SendMessageVC: UITableViewDataSource {
@@ -143,7 +155,8 @@ extension SendMessageVC: UITableViewDataSource {
         return 2
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView,
+                   numberOfRowsInSection section: Int) -> Int {
         if section == SEC_TYPE.textField.hashValue {
             return numbers.count
         }
@@ -151,31 +164,37 @@ extension SendMessageVC: UITableViewDataSource {
         
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        //let cell: UITableViewCell
+    func tableView(_ tableView: UITableView,
+                   cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == SEC_TYPE.textField.hashValue {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "NumbersCell", for: indexPath) as! NumbersCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "NumbersCell",
+                                                     for: indexPath) as! NumbersCell
             cell.textField.tag = indexPath.row + 1
             cell.textField.delegate = self
             return cell
         }
-        let cell =   tableView.dequeueReusableCell(withIdentifier: "actions")!
-        
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "actions")!
         return cell
     }
     
 }
 
 extension SendMessageVC: UITableViewDelegate {
-   
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        IQKeyboardManager.shared().isEnabled = true
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
+    func tableView(_ tableView: UITableView,
+                   heightForRowAt indexPath: IndexPath) -> CGFloat {
         return CGFloat(rowHeight)
+    }
+}
+
+extension SendMessageVC: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager,
+                         didUpdateLocations locations: [CLLocation]) {
         
+        if let location = manager.location {
+            let locValue:CLLocationCoordinate2D = location.coordinate
+            self.lat = "\(locValue.latitude)"
+            self.lon = "\(locValue.longitude)"
+            manager.stopUpdatingLocation()
+        }
     }
 }

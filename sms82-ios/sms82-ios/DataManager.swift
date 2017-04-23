@@ -9,7 +9,7 @@
 import Foundation
 
 class DataManager {
-    class var sharedInstance: DataManager {
+    class var shared: DataManager {
         struct Static {
             static let instance = DataManager()
         }
@@ -19,22 +19,53 @@ class DataManager {
     func setMessagesLeft(_ m: String) {
         UserDefaults.standard.set(m, forKey: "messages_left")
     }
+    
     func getMessagesLeft() -> String {
-        return UserDefaults.standard.value(forKey: "messages_left") as! String
+        if let ml = UserDefaults.standard.string(forKey: "messages_left") {
+            return ml 
+        }
+        return ""
     }
+    
+    
     
     func setMessagesSent(_ m: String) {
         UserDefaults.standard.set(m, forKey: "messages_sent")
     }
+    
     func getMessagesSent() -> String{
-        return UserDefaults.standard.value(forKey: "messages_sent") as! String
+        if let ms = UserDefaults.standard.value(forKey: "messages_sent") {
+            return ms as! String
+        }
+        return ""
+    }
+    
+    func setPassord(_ pass: String) {
+        UserDefaults.standard.set(pass, forKey: "password")
+    }
+        
+    func getPassword() -> String {
+        if let a = UserDefaults.standard.string(forKey: "password") {
+            return a
+        }
+        return ""
     }
     
     func setUsername(_ m: String) {
         UserDefaults.standard.set(m, forKey: "username")
     }
+    
     func getUsername() -> String {
-        return UserDefaults.standard.value(forKey: "username") as! String
+        
+        if let username = UserDefaults.standard.value(forKey: "username") {
+            return username as! String
+        }
+        
+        return ""
+    }
+    
+    func getDeviceID() -> String {
+        return  UIDevice.current.identifierForVendor!.uuidString
     }
     
 }

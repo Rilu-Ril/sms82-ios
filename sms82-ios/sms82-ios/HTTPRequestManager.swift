@@ -40,7 +40,7 @@ class HTTPRequestManager {
                         error((response.error?.localizedDescription)!)
                     } else {
                         
-                        error("Не удалось загрузить данные. Вероятно, соединение с Интернетом прервано.")
+                        error("Internet connection lost")
                     }
                     return
                 }
@@ -52,7 +52,7 @@ class HTTPRequestManager {
             print("status code: \(statusCode)")
             
             if  statusCode == 401 {
-                error("Вам нужно войти, чтобы выполнить это действие")
+                error("Unauthorised")
                 return
             }
             

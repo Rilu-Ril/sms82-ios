@@ -10,28 +10,6 @@ import UIKit
 import MapKit
 
 class AuthentigicationVC: UIViewController, CLLocationManagerDelegate {
-
-    @IBAction func Login(_ sender: Any) {
-        
-        var log = LoginModel()
-        log.login = self.txtUsername.text!
-        log.password = self.txtPassword.text!
-        let device_id = UserDefaults.standard.string(forKey: "devid")
-        log.device_id = device_id!
-        log.geolocation.append(lat)
-        log.geolocation.append(lon)
-        
-        
-        ServerManager.sharedInstance.login(with: log, { (resp) in
-            if resp.status == "success" {
-                UserDefaults.standard.set(self.txtUsername.text!, forKey: "username")
-                UserDefaults.standard.set(self.txtPassword.text!, forKey: "password")
-                self.presentController()
-            } else {
-                self.lblError.text = resp.info
-            }
-        }, error: showErrorAlert)
-    }
     
     @IBOutlet weak var lblError: UILabel!
     @IBOutlet weak var txtUsername: UITextField!
@@ -44,6 +22,7 @@ class AuthentigicationVC: UIViewController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setNavigationBar()
+        self.title = "Authentification"
         self.lblError.text = ""
         
         self.locationManager.requestAlwaysAuthorization()
@@ -59,25 +38,39 @@ class AuthentigicationVC: UIViewController, CLLocationManagerDelegate {
 
     }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if lat != "0" {
-            return
-        }
+    @IBAction func Login(_ sender: Any) {
         
+        let log = LoginModel()
+        log.login = self.txtUsername.text!
+        log.password = self.txtPassword.text!
+        log.device_id = DataManager.shared.getDeviceID()
+        log.geolocation.append(lat)
+        log.geolocation.append(lon)
+        
+        ServerManager.sharedInstance.login(with: log, { (resp) in
+            if resp.status == "success" {
+                DataManager.shared.setUsername(self.txtUsername.text!)
+                DataManager.shared.setPassord(self.txtPassword.text!)
+                self.presentController()
+            } else {
+                self.lblError.text = resp.info
+            }
+        }, error: showErrorAlert)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = manager.location {
             let locValue:CLLocationCoordinate2D = location.coordinate
             print("locations = \(locValue.latitude) \(locValue.longitude)")
             self.lat = "\(locValue.latitude)"
             self.lon = "\(locValue.longitude)"
+            manager.stopUpdatingLocation()
         }
     }
     
     func presentController() {
         let revealVC = SWRevealViewController()
-
-        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
         let sideBar  = storyboard.instantiateViewController(withIdentifier: "SideBarVC")
         
         let vc = storyboard.instantiateViewController(withIdentifier: "sendMessage")
