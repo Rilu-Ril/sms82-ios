@@ -78,7 +78,7 @@ class SendMessageVC: UIViewController, UIScrollViewDelegate, UITextFieldDelegate
         }
         
         if numberCount >= userBalance {
-            showErrorAlert(message: "Exeed balance")
+            showErrorAlert(message: "Exсeed balance")
             return
         }
         

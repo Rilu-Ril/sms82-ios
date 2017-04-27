@@ -28,11 +28,12 @@ struct Info {
     }
     func toDict() -> [String: Any]{
         var d = [String: Any]()
-        d.updateValue(geolocation, forKey: "geolocation")
-        d.updateValue(self.message_body, forKey: "message_body")
-     
-        d.updateValue("testid", forKey: "user_device_id")
+        d.updateValue("\(geolocation[0]),\(geolocation[1])", forKey: "geolocation")
         
+        d.updateValue(self.message_body, forKey: "message")
+        d.updateValue(DataManager.shared.getDeviceID(), forKey: "user_device_id")
+        d.updateValue(DataManager.shared.getUsername(), forKey: "username")
+        d.updateValue(DataManager.shared.getPassword(), forKey: "password")
         var phoneValue = "["
         for (ind, phone) in phones.enumerated() {
             if phone != "" {
@@ -42,8 +43,8 @@ struct Info {
                     phoneValue += ",\"\(phone)\""
                 }
             }
-          
         }
+        
         phoneValue += "]"
         
         d.updateValue(phoneValue, forKey: "phones")
